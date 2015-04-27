@@ -21,6 +21,7 @@ int ledPinR = 10;
 int ledPinB = 9;
 int statusLED = 13;
 
+
 int analogPin = 0; // MSGEQ7 OUT
 int strobePin = 7; // MSGEQ7 STROBE
 int resetPin = 8; // MSGEQ7 RESET
@@ -33,6 +34,7 @@ int filterValue = 120;
 
 void setup()
 {
+  Serial.begin(9600);
   //Read from function pin
   pinMode(functionPin, INPUT);
 
@@ -41,6 +43,11 @@ void setup()
   // Write to MSGEQ7 STROBE and RESET
   pinMode(strobePin, OUTPUT);
   pinMode(resetPin, OUTPUT);
+  pinMode(A1, INPUT); //red
+  pinMode(A2, INPUT); //green
+  pinMode(A3, INPUT); //blue
+
+
 
   // Set analogPin's reference voltage
   analogReference(DEFAULT); // 5V
@@ -79,6 +86,11 @@ void musicMode(void) {
   analogWrite(ledPinR, spectrumValue[1]);
   analogWrite(ledPinG, spectrumValue[4]);
   analogWrite(ledPinB, spectrumValue[6]);
+
+  Serial.println(spectrumValue[1], DEC);
+  Serial.println(spectrumValue[4], DEC);
+  Serial.println(spectrumValue[6], DEC);
+
 }
 
 void moodlightMode(void) {
@@ -99,10 +111,20 @@ void moodlightMode(void) {
 }
 void loop()
 {
+
+  // Serial.println("Pot value: ");
+  // Serial.println(potInput, DEC);
+  analogWrite(ledPinR, 255 - map( analogRead(A1), 0, 1024, 0, 255 ));
+  analogWrite(ledPinG, 255 - map( analogRead(A2), 0, 1024, 0, 255 ));
+  analogWrite(ledPinB, 255 - map( analogRead(A3), 0, 1024, 0, 255 ) ); 
+
+  
+/*
   if (digitalRead(functionPin)) {
     musicMode();
   }
   else {
     moodlightMode();
   }
+*/
 }
